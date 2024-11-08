@@ -1,0 +1,11 @@
+# Create .gitignore
+echo node_modules/
+node_modules
+npm-debug.log
+yarn-error.log
+error.log
+
+.env
+*.log
+coverage/
+.DS_Store" > .gitignore

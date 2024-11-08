@@ -1,0 +1,29 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "tests",
+    "start": "node server.js"
+    
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.11.3",
+    "sequelize": "^6.37.5",
+    "winston": "^3.16.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.14.0",
+    "nodemon": "^3.1.7"
+  }
+}
