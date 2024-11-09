@@ -71,7 +71,80 @@ export async function createContact(data) {
   }
 }
 
-
 export async function updateContact(data) {
-  // Facing some issues with the updateContact function implementation
-};
+  const {
+    locationId,
+    id,
+    firstName,
+    lastName,
+    email,
+    phone,
+    source,
+    tags,
+    country,
+    dateAdded,
+    customFields,
+  } = data;
+
+  const formattedDateAdded = dateAdded ? formatDateTime(dateAdded) : null;
+  const transaction = await sequelize.transaction();
+
+  try {
+    const contact = await Contact.findByPk(id, { transaction });
+    if (!contact) {
+      throw new ApiError(404, 'Contact not found');
+    }
+
+    await contact.update(
+      {
+        location_id: locationId,
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        phone,
+        source,
+        tags: JSON.stringify(tags),
+        country,
+        date_added: formattedDateAdded,
+      },
+      { transaction }
+    );
+
+    if (customFields && customFields.length > 0) {
+      await ContactCustomFieldValue.destroy({
+        where: { contact_id: id },
+        transaction,
+      });
+
+      const customFieldValues = customFields.map((field) => ({
+        contact_id: id,
+        field_id: field.id,
+        field_value: Array.isArray(field.value)
+          ? JSON.stringify(field.value)
+          : String(field.value),
+      }));
+
+      await ContactCustomFieldValue.bulkCreate(customFieldValues, {
+        transaction,
+      });
+    }
+
+    await transaction.commit();
+    return {
+      id: contact.id,
+      locationId: contact.location_id,
+      firstName: contact.first_name,
+      lastName: contact.last_name,
+      email: contact.email,
+      phone: contact.phone,
+      source: contact.source,
+      tags: JSON.parse(contact.tags),
+      country: contact.country,
+      dateAdded: contact.date_added,
+      customFields,
+    };
+  } catch (error) {
+    await transaction.rollback();
+    throw new ApiError(500, `Failed to update contact: ${error.message}`);
+  }
+}
