@@ -5,6 +5,11 @@ import Contact from './Contact.model.js';
 class ContactCustomFieldValue extends Model {}
 
 ContactCustomFieldValue.init({
+    id:{
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     contact_id: {
         type: DataTypes.STRING,
         references: {
@@ -13,7 +18,7 @@ ContactCustomFieldValue.init({
         }
     },
     field_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     },
     field_value: {
